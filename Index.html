@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prank Website</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: black;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: red;
+            font-size: 5rem;
+            text-shadow: 0 0 20px red;
+            animation: zoom 1s infinite alternate;
+        }
+
+        @keyframes zoom {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.2);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ফোচকে শয়তান</h1>
+
+    <script>
+        window.onload = function() {
+            alert("⚠️ ফোচকে শয়তান detected!");
+        };
+    </script>
+
+</body>
+</html>
