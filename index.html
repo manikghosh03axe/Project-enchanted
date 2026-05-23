@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="dark" data-dark-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GitHub</title>
+  <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg" type="image/svg+xml"/>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+    }
+
+    /* ── OVERLAY ── */
+    #prank-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0d1117;
+      animation: overlayFade 0.4s ease 2.8s forwards;
+      pointer-events: all;
+    }
+
+    @keyframes overlayFade {
+      to { opacity: 0; pointer-events: none; }
+    }
+
+    .prank-card {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 60%);
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 48px 56px;
+      text-align: center;
+      box-shadow: 0 0 80px rgba(240, 60, 60, 0.15), 0 0 0 1px #30363d;
+      animation: cardPop 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .prank-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255, 80, 80, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    @keyframes cardPop {
+      from { transform: scale(0.6); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .prank-emoji {
+      font-size: 72px;
+      line-height: 1;
+      margin-bottom: 20px;
+      display: block;
+      animation: wiggle 0.8s ease 0.8s 3;
+    }
+
+    @keyframes wiggle {
+      0%,100% { transform: rotate(0deg); }
+      25%      { transform: rotate(-12deg) scale(1.1); }
+      75%      { transform: rotate(12deg)  scale(1.1); }
+    }
+
+    .prank-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #f85149;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.6s forwards;
+    }
+
+    .prank-name {
+      font-size: clamp(42px, 8vw, 72px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.9s forwards;
+      background: linear-gradient(90deg, #ff6b6b, #ffa06b, #ff6b6b);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp 0.6s ease 0.9s forwards, shimmer 2s linear 1.2s infinite;
+    }
+
+    @keyframes shimmer {
+      to { background-position: 200% center; }
+    }
+
+    .prank-sub {
+      margin-top: 18px;
+      font-size: 15px;
+      color: #8b949e;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 1.3s forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    .prank-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 30px;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 1.6s forwards;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #f85149;
+      animation: bounce 0.6s ease infinite alternate;
+    }
+    .dot:nth-child(2) { animation-delay: 0.15s; background: #ff7b27; }
+    .dot:nth-child(3) { animation-delay: 0.30s; background: #ffa657; }
+
+    @keyframes bounce {
+      to { transform: translateY(-8px); }
+    }
+
+    /* ── NAVBAR ── */
+    header {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .gh-logo svg { width: 32px; height: 32px; fill: #e6edf3; }
+
+    nav { display: flex; gap: 4px; }
+
+    nav a {
+      color: #e6edf3;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+
+    nav a:hover { background: #30363d; }
+
+    .nav-search {
+      margin-left: auto;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #8b949e;
+      font-size: 13px;
+      padding: 6px 12px;
+      width: 220px;
+      outline: none;
+    }
+
+    .nav-search:focus { border-color: #58a6ff; }
+
+    .btn-primary {
+      background: #238636;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .btn-primary:hover { background: #2ea043; }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      font-size: 18px;
+      color: #8b949e;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .btn-secondary {
+      background: transparent;
+      color: #e6edf3;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+
+    .btn-secondary:hover { background: #161b22; border-color: #58a6ff; color: #58a6ff; }
+
+    .hero-form { display: flex; flex-direction: column; gap: 10px; }
+
+    .hero-form input {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #e6edf3;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+    }
+
+    .hero-form input:focus { border-color: #58a6ff; }
+
+    .hero-form .btn-primary { padding: 10px; font-size: 16px; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: #161b22;
+      border-top: 1px solid #30363d;
+      border-bottom: 1px solid #30363d;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: center;
+      gap: 64px;
+      font-size: 15px;
+      color: #8b949e;
+    }
+
+    .stat strong { color: #e6edf3; font-size: 22px; font-weight: 700; display: block; }
+
+    /* ── FEATURES ── */
+    .features {
+      max-width: 1200px;
+      margin: 64px auto;
+      padding: 0 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .feature-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 28px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .feature-card:hover { border-color: #58a6ff; transform: translateY(-3px); }
+
+    .feature-icon { font-size: 32px; margin-bottom: 14px; }
+
+    .feature-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+
+    .feature-card p { font-size: 14px; color: #8b949e; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid #21262d;
+      padding: 32px;
+      text-align: center;
+      font-size: 12px;
+      color: #6e7681;
+    }
+
+    footer a { color: #6e7681; text-decoration: none; margin: 0 8px; }
+    footer a:hover { color: #58a6ff; }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .stats-bar { gap: 24px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PRANK OVERLAY -->
+  <div id="prank-overlay">
+    <div class="prank-card">
+      <span class="prank-emoji">😈</span>
+      <div class="prank-label">GitHub Welcomes</div>
+      <div class="prank-name">ফোচকে শয়তান</div>
+      <p class="prank-sub">স্বাগতম! তোমার জন্যই অপেক্ষা করছিলাম 👋</p>
+      <div class="prank-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAKE GITHUB PAGE -->
+  <header>
+    <a class="gh-logo" href="#">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+          0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+          -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+          .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+          -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0
+          1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82
+          1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
+          1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+    </a>
+    <nav>
+      <a href="#">Product</a>
+      <a href="#">Solutions</a>
+      <a href="#">Open Source</a>
+      <a href="#">Pricing</a>
+    </nav>
+    <input class="nav-search" type="text" placeholder="Search or jump to…" />
+    <a href="#" style="color:#e6edf3;text-decoration:none;font-size:14px;">Sign in</a>
+    <button class="btn-primary">Sign up</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Build and ship software on the world's leading AI-powered developer platform.</h1>
+        <p>Join over 100 million developers who use GitHub to discover, share, and contribute to better software.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" style="padding:12px 24px;font-size:16px;">Sign up for free</button>
+          <button class="btn-secondary">Start a free enterprise trial →</button>
+        </div>
+      </div>
+      <div class="hero-form">
+        <p style="font-size:13px;color:#8b949e;">Enter your email</p>
+        <input type="email" placeholder="your@email.com" />
+        <button class="btn-primary">Sign up for GitHub</button>
+        <p style="font-size:12px;color:#6e7681;">By creating an account, you agree to the <a href="#" style="color:#58a6ff;">Terms of Service</a>.</p>
+      </div>
+    </section>
+
+    <div class="stats-bar">
+      <div class="stat"><strong>100M+</strong> Developers</div>
+      <div class="stat"><strong>4M+</strong> Organizations</div>
+      <div class="stat"><strong>330M+</strong> Repositories</div>
+      <div class="stat"><strong>90%</strong> Fortune 100</div>
+    </div>
+
+    <section class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>GitHub Copilot</h3>
+        <p>The AI coding assistant that helps you write, review, and fix code — right in your editor.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Advanced Security</h3>
+        <p>Find and fix vulnerabilities in your code with integrated security scanning and secret detection.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>GitHub Actions</h3>
+        <p>Automate your workflow from idea to production with powerful CI/CD pipelines built right in.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <h3>GitHub Pages</h3>
+        <p>Host your project pages, blogs, and websites directly from your GitHub repositories for free.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔀</div>
+        <h3>Pull Requests</h3>
+        <p>Collaborate on code changes with powerful code review tools, inline comments, and team discussions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Insights & Analytics</h3>
+        <p>Understand your project's activity and community with rich repository analytics and dashboards.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p style="margin-bottom:12px;">
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+      <a href="#">Security</a>
+      <a href="#">Status</a>
+      <a href="#">Docs</a>
+      <a href="#">Contact</a>
+      <a href="#">Manage cookies</a>
+    </p>
+    <p>© 2024 GitHub, Inc.</p>
+  </footer>
+
+</body>
+</html>
